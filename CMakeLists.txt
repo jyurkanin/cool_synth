@@ -42,8 +42,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 enable_testing()
 
-
-
 juce_add_plugin(
   CoolSynthPlugin
 
@@ -57,21 +55,36 @@ juce_add_plugin(
   PRODUCT_NAME "Cool Synth"
 )
 
-file(GLOB cuda_files "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cu")
-file(GLOB src_files "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
-file(GLOB header_files "${CMAKE_CURRENT_SOURCE_DIR}/src/*.hpp")
+juce_generate_juce_header(CoolSynthPlugin)
+
+set(cuda_files)
+set(src_files
+  src/gui/main.cpp
+  src/gui/MainWindow.cpp
+)
+set(header_files
+  src/gui/MainWindow.hpp
+  src/audio/CoolSynthPlugin.hpp
+)
 
 target_sources(
   CoolSynthPlugin
   PRIVATE
   ${src_files}
+  ${cuda_files}
   ${header_files}
 )
 
 target_link_libraries(
   CoolSynthPlugin
   PRIVATE
-  juce::juce_audio_utils
+  juce::juce_core
+  juce::juce_data_structures
+  juce::juce_events
+  juce::juce_graphics
+  juce::juce_gui_basics
+  juce::juce_gui_extra
+  juce::juce_opengl
   PUBLIC
   juce::juce_recommended_config_flags
   juce::juce_recommended_lto_flags
